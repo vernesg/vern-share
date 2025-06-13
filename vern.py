@@ -20,7 +20,7 @@ ua = random.choice(ua_list)
 def color(text, code): return f"\033[{code}m{text}\033[0m"
 def banner():
     os.system("clear")
-    print(color("SPAMSHARE - ACEBOOK AUTO SHARE ", '94'))
+    print(color("SPAMSHARE - FACEBOOK AUTO SHARE ", '94'))
     print(color("Author  : VERN", '96'))
     print(color("Warning : THIS TOOL IS PREMIUM!", '91'))
     print("-" * 50)
